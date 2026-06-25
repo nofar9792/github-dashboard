@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Code, Search } from "lucide-react";
+import { ThemeToggle } from "./theme-toggle";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -18,7 +19,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex flex-col items-center justify-center px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="text-center max-w-2xl w-full">
         {/* Hero Section */}
         <div className="mb-12">
@@ -27,13 +31,13 @@ export default function Home() {
               <Code className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white mb-4">
             GitHub Portfolio
           </h1>
-          <p className="text-xl text-slate-300 mb-2">
+          <p className="text-xl text-slate-700 dark:text-slate-300 mb-2">
             Visualize your GitHub journey in one beautiful dashboard
           </p>
-          <p className="text-slate-400">
+          <p className="text-slate-600 dark:text-slate-400">
             See your repositories, contributions, and coding languages at a glance
           </p>
         </div>
@@ -42,14 +46,14 @@ export default function Home() {
         <form onSubmit={handleSearch} className="mb-12">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg blur opacity-75"></div>
-            <div className="relative bg-slate-900 rounded-lg p-2 flex items-center gap-3">
+            <div className="relative bg-slate-50 dark:bg-slate-900 rounded-lg p-2 flex items-center gap-3">
               <Search className="w-5 h-5 text-slate-400 ml-3" />
               <input
                 type="text"
                 placeholder="Enter GitHub username..."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="flex-1 bg-transparent text-white placeholder-slate-500 outline-none py-3"
+                className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-500 outline-none py-3"
               />
               <button
                 type="submit"
@@ -64,31 +68,31 @@ export default function Home() {
 
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition">
+          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-blue-500 dark:hover:border-blue-400 transition">
             <div className="text-3xl mb-3">📊</div>
-            <h3 className="font-bold text-white mb-2">Statistics</h3>
-            <p className="text-slate-400 text-sm">
+            <h3 className="font-bold text-slate-900 dark:text-white mb-2">Statistics</h3>
+            <p className="text-slate-700 dark:text-slate-400 text-sm">
               View your followers, repos, and total stars
             </p>
           </div>
-          <div className="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition">
+          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-blue-500 dark:hover:border-blue-400 transition">
             <div className="text-3xl mb-3">🔥</div>
-            <h3 className="font-bold text-white mb-2">Contributions</h3>
-            <p className="text-slate-400 text-sm">
+            <h3 className="font-bold text-slate-900 dark:text-white mb-2">Contributions</h3>
+            <p className="text-slate-700 dark:text-slate-400 text-sm">
               Track your coding streak and activity
             </p>
           </div>
-          <div className="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition">
+          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-blue-500 dark:hover:border-blue-400 transition">
             <div className="text-3xl mb-3">⭐</div>
-            <h3 className="font-bold text-white mb-2">Top Projects</h3>
-            <p className="text-slate-400 text-sm">
+            <h3 className="font-bold text-slate-900 dark:text-white mb-2">Top Projects</h3>
+            <p className="text-slate-700 dark:text-slate-400 text-sm">
               Highlight your most popular repositories
             </p>
           </div>
         </div>
 
         {/* Example Users */}
-        <div className="text-slate-400">
+        <div className="text-slate-600 dark:text-slate-400">
           <p className="mb-4">Try these popular developers:</p>
           <div className="flex flex-wrap justify-center gap-3">
             {["torvalds", "gvanrossum", "antirez", "elisealder"].map((user) => (
@@ -98,7 +102,7 @@ export default function Home() {
                   setUsername(user);
                   router.push(`/profile/${user}`);
                 }}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 rounded-lg transition text-sm text-slate-300"
+                className="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition text-sm text-slate-700 dark:text-slate-300"
               >
                 @{user}
               </button>
