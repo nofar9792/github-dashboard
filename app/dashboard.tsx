@@ -6,11 +6,19 @@ import {
   fetchUserRepos,
   fetchUserEvents,
   getLanguageStats,
+  getLanguagePercentage,
   getTopRepos,
   calculateContributionStreak,
+  getContributionHeatmap,
+  getRepositoryTimeline,
+  categorizeRepositories,
+  filterRepositories,
+  sortRepositories,
   GitHubUser,
   Repository,
   LanguageStat,
+  RepositoryCategory,
+  ContributionData,
 } from "@/lib/github";
 import {
   BarChart,
@@ -53,10 +61,17 @@ export default function Dashboard({ username }: { username: string }) {
   const [user, setUser] = useState<GitHubUser | null>(null);
   const [repos, setRepos] = useState<Repository[]>([]);
   const [languageStats, setLanguageStats] = useState<LanguageStat[]>([]);
+  const [languagePercentage, setLanguagePercentage] = useState<LanguageStat[]>([]);
   const [topRepos, setTopRepos] = useState<Repository[]>([]);
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState<string>();
+  const [sortBy, setSortBy] = useState<"stars" | "forks" | "updated" | "created" | "name">("stars");
+  const [selectedCategory, setSelectedCategory] = useState("All Repositories");
+  const [categories, setCategories] = useState<RepositoryCategory[]>([]);
+  const [contributionData, setContributionData] = useState<ContributionData[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -68,10 +83,13 @@ export default function Dashboard({ username }: { username: string }) {
         const reposData = await fetchUserRepos(username);
         setRepos(reposData);
         setLanguageStats(getLanguageStats(reposData));
+        setLanguagePercentage(getLanguagePercentage(reposData));
         setTopRepos(getTopRepos(reposData));
+        setCategories(categorizeRepositories(reposData));
 
         const eventsData = await fetchUserEvents(username);
         setStreak(calculateContributionStreak(eventsData));
+        setContributionData(getContributionHeatmap(eventsData));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load data");
       } finally {
@@ -104,6 +122,18 @@ export default function Dashboard({ username }: { username: string }) {
       </div>
     );
   }
+
+  const currentCategory = categories.find((c) => c.name === selectedCategory);
+  const categoryRepos = currentCategory?.repos || repos;
+  const filteredRepos = filterRepositories(
+    categoryRepos,
+    searchQuery,
+    selectedLanguage
+  );
+  const sortedRepos = sortRepositories(filteredRepos, sortBy);
+  const uniqueLanguages = Array.from(
+    new Set(repos.filter((r) => r.language).map((r) => r.language))
+  ).sort();
 
   return (
     <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-900 dark:text-white">
@@ -203,7 +233,7 @@ export default function Dashboard({ username }: { username: string }) {
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* Languages Chart */}
           <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6">
             <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Languages Used</h2>
@@ -250,56 +280,175 @@ export default function Dashboard({ username }: { username: string }) {
               </BarChart>
             </ResponsiveContainer>
           </div>
+
+          {/* Language Percentage */}
+          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Language Usage %</h2>
+            <div className="space-y-3">
+              {languagePercentage.map((lang) => (
+                <div key={lang.name}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="font-medium text-slate-700 dark:text-slate-300">{lang.name}</span>
+                    <span className="text-slate-600 dark:text-slate-400">{lang.percentage}%</span>
+                  </div>
+                  <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full"
+                      style={{ width: `${lang.percentage}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Contribution Heatmap */}
+        <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-12">
+          <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Contribution Activity (Last 30 Days)</h2>
+          <div className="grid grid-cols-7 gap-2">
+            {contributionData.slice(-30).map((day, idx) => (
+              <div
+                key={idx}
+                className="aspect-square rounded-lg flex items-center justify-center text-xs font-semibold text-white transition"
+                style={{
+                  backgroundColor:
+                    day.count === 0
+                      ? "var(--heat-0, #e2e8f0)"
+                      : day.count < 3
+                      ? "var(--heat-1, #bfdbfe)"
+                      : day.count < 6
+                      ? "var(--heat-2, #60a5fa)"
+                      : day.count < 10
+                      ? "var(--heat-3, #3b82f6)"
+                      : "var(--heat-4, #1e40af)",
+                }}
+                title={`${day.date}: ${day.count} contributions`}
+              >
+                {day.count > 0 ? day.count : ""}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Repository Categories */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-3">
+            {categories.map((category) => (
+              <button
+                key={category.name}
+                onClick={() => {
+                  setSelectedCategory(category.name);
+                  setSearchQuery("");
+                  setSelectedLanguage(undefined);
+                }}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  selectedCategory === category.name
+                    ? "bg-blue-600 dark:bg-blue-500 text-white"
+                    : "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600"
+                }`}
+              >
+                {category.name} ({category.repos.length})
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Search and Filter */}
+        <div className="mb-8 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Search repositories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <select
+              value={selectedLanguage || ""}
+              onChange={(e) => setSelectedLanguage(e.target.value || undefined)}
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Languages</option>
+              {uniqueLanguages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="stars">Sort by Stars</option>
+              <option value="forks">Sort by Forks</option>
+              <option value="updated">Sort by Updated</option>
+              <option value="created">Sort by Created</option>
+              <option value="name">Sort by Name</option>
+            </select>
+          </div>
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            Showing {sortedRepos.length} of {categoryRepos.length} repositories
+          </p>
         </div>
 
         {/* Top Repositories */}
         <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Top Repositories</h2>
+          <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Repositories</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {topRepos.map((repo) => (
-              <a
-                key={repo.id}
-                href={repo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-slate-200 dark:bg-slate-700/50 hover:bg-slate-300 dark:hover:bg-slate-600/50 border border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg p-4 transition group"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
-                    {repo.name}
-                  </h3>
-                  <ExternalLink className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition" />
-                </div>
-                {repo.description && (
-                  <p className="text-slate-700 dark:text-slate-400 text-sm mb-3 line-clamp-2">
-                    {repo.description}
-                  </p>
-                )}
-                <div className="flex flex-wrap gap-3 mb-3">
-                  {repo.language && (
-                    <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded">
-                      {repo.language}
-                    </span>
+            {sortedRepos.length > 0 ? (
+              sortedRepos.map((repo) => (
+                <a
+                  key={repo.id}
+                  href={repo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-slate-200 dark:bg-slate-700/50 hover:bg-slate-300 dark:hover:bg-slate-600/50 border border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg p-4 transition group"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
+                      {repo.name}
+                    </h3>
+                    <ExternalLink className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition" />
+                  </div>
+                  {repo.description && (
+                    <p className="text-slate-700 dark:text-slate-400 text-sm mb-3 line-clamp-2">
+                      {repo.description}
+                    </p>
                   )}
-                  {repo.topics.slice(0, 2).map((topic) => (
-                    <span
-                      key={topic}
-                      className="text-xs bg-slate-300 dark:bg-slate-600/50 text-slate-700 dark:text-slate-300 px-2 py-1 rounded"
-                    >
-                      {topic}
+                  <div className="flex flex-wrap gap-3 mb-3">
+                    {repo.language && (
+                      <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded">
+                        {repo.language}
+                      </span>
+                    )}
+                    {repo.topics.slice(0, 2).map((topic) => (
+                      <span
+                        key={topic}
+                        className="text-xs bg-slate-300 dark:bg-slate-600/50 text-slate-700 dark:text-slate-300 px-2 py-1 rounded"
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-slate-700 dark:text-slate-400">
+                    <span className="flex items-center gap-1">
+                      <Star className="w-4 h-4" /> {repo.stargazers_count}
                     </span>
-                  ))}
-                </div>
-                <div className="flex items-center gap-4 text-sm text-slate-700 dark:text-slate-400">
-                  <span className="flex items-center gap-1">
-                    <Star className="w-4 h-4" /> {repo.stargazers_count}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <GitFork className="w-4 h-4" /> {repo.forks_count}
-                  </span>
-                </div>
-              </a>
-            ))}
+                    <span className="flex items-center gap-1">
+                      <GitFork className="w-4 h-4" /> {repo.forks_count}
+                    </span>
+                  </div>
+                </a>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8">
+                <p className="text-slate-600 dark:text-slate-400">
+                  No repositories match your filters.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
