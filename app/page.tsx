@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Github, Search } from "lucide-react";
+import { Code, Search } from "lucide-react";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -24,7 +24,7 @@ export default function Home() {
         <div className="mb-12">
           <div className="flex justify-center mb-6">
             <div className="p-4 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full">
-              <Github className="w-12 h-12 text-white" />
+              <Code className="w-12 h-12 text-white" />
             </div>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">

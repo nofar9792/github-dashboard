@@ -32,7 +32,7 @@ import {
   Users,
   FileCode,
   Flame,
-  Github,
+  Code,
   ExternalLink,
   Loader,
 } from "lucide-react";
@@ -124,7 +124,7 @@ export default function Dashboard({ username }: { username: string }) {
                   rel="noopener noreferrer"
                   className="text-slate-400 hover:text-blue-400 transition"
                 >
-                  <Github className="w-6 h-6" />
+                  <Code className="w-6 h-6" />
                 </a>
               </div>
               <p className="text-slate-400 text-lg mt-1">@{user.login}</p>
