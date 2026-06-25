@@ -1,9 +1,10 @@
 import Dashboard from "@/app/dashboard";
 
-export default function ProfilePage({
+export default async function ProfilePage({
   params,
 }: {
-  params: { username: string };
+  params: Promise<{ username: string }>;
 }) {
-  return <Dashboard username={params.username} />;
+  const { username } = await params;
+  return <Dashboard username={username} />;
 }
