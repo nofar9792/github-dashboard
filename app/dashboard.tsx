@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -44,7 +44,6 @@ import {
   ExternalLink,
   Loader,
 } from "lucide-react";
-import { ThemeToggle } from "./theme-toggle";
 
 const COLORS = [
   "#3b82f6",
@@ -102,10 +101,10 @@ export default function Dashboard({ username }: { username: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <Loader className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-4" />
-          <p className="text-slate-600 dark:text-slate-300 text-lg">Loading GitHub profile...</p>
+          <p className="text-slate-600 text-lg">Loading GitHub profile...</p>
         </div>
       </div>
     );
@@ -113,9 +112,9 @@ export default function Dashboard({ username }: { username: string }) {
 
   if (error || !user) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 text-lg">
+          <p className="text-red-600 text-lg">
             {error || "User not found"}
           </p>
         </div>
@@ -136,14 +135,10 @@ export default function Dashboard({ username }: { username: string }) {
   ).sort();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-900 dark:text-white">
+    <div className="min-h-screen bg-white text-slate-900">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800/50 backdrop-blur border-b border-slate-200 dark:border-slate-700">
+      <div className="bg-white backdrop-blur border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex items-center justify-between mb-6">
-            <div />
-            <ThemeToggle />
-          </div>
           <div className="flex items-center gap-6">
             <img
               src={user.avatar_url}
@@ -162,13 +157,13 @@ export default function Dashboard({ username }: { username: string }) {
                   <Code className="w-6 h-6" />
                 </a>
               </div>
-              <p className="text-slate-600 dark:text-slate-400 text-lg mt-1">@{user.login}</p>
-              {user.bio && <p className="text-slate-700 dark:text-slate-300 mt-2">{user.bio}</p>}
-              <div className="flex flex-wrap gap-4 mt-4 text-sm text-slate-600 dark:text-slate-400">
-                {user.location && <span>📍 {user.location}</span>}
-                {user.blog && <span>🌐 {user.blog}</span>}
+              <p className="text-slate-600 text-lg mt-1">@{user.login}</p>
+              {user.bio && <p className="text-slate-700 mt-2">{user.bio}</p>}
+              <div className="flex flex-wrap gap-4 mt-4 text-sm text-slate-600">
+                {user.location && <span>ðŸ“ {user.location}</span>}
+                {user.blog && <span>ðŸŒ {user.blog}</span>}
                 {user.twitter_username && (
-                  <span>𝕏 @{user.twitter_username}</span>
+                  <span>ð• @{user.twitter_username}</span>
                 )}
               </div>
             </div>
@@ -179,40 +174,40 @@ export default function Dashboard({ username }: { username: string }) {
       {/* Stats Grid */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-blue-500 dark:hover:border-blue-400 transition">
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-blue-500 transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Repositories</p>
+                <p className="text-slate-600 text-sm">Repositories</p>
                 <p className="text-3xl font-bold mt-2">{user.public_repos}</p>
               </div>
               <FileCode className="w-10 h-10 text-blue-400" />
             </div>
           </div>
 
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-yellow-500 dark:hover:border-yellow-400 transition">
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-yellow-500 transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Followers</p>
+                <p className="text-slate-600 text-sm">Followers</p>
                 <p className="text-3xl font-bold mt-2">{user.followers}</p>
               </div>
               <Users className="w-10 h-10 text-yellow-400" />
             </div>
           </div>
 
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-green-500 dark:hover:border-green-400 transition">
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-green-500 transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Following</p>
+                <p className="text-slate-600 text-sm">Following</p>
                 <p className="text-3xl font-bold mt-2">{user.following}</p>
               </div>
               <Users className="w-10 h-10 text-green-400" />
             </div>
           </div>
 
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-red-500 dark:hover:border-red-400 transition">
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-red-500 transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Total Stars</p>
+                <p className="text-slate-600 text-sm">Total Stars</p>
                 <p className="text-3xl font-bold mt-2">
                   {repos.reduce((sum, repo) => sum + repo.stargazers_count, 0)}
                 </p>
@@ -221,10 +216,10 @@ export default function Dashboard({ username }: { username: string }) {
             </div>
           </div>
 
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-orange-500 dark:hover:border-orange-400 transition">
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-orange-500 transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">Contribution Streak</p>
+                <p className="text-slate-600 text-sm">Contribution Streak</p>
                 <p className="text-3xl font-bold mt-2">{streak}</p>
               </div>
               <Flame className="w-10 h-10 text-orange-400" />
@@ -235,8 +230,8 @@ export default function Dashboard({ username }: { username: string }) {
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* Languages Chart */}
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Languages Used</h2>
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-6 text-slate-900">Languages Used</h2>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -262,8 +257,8 @@ export default function Dashboard({ username }: { username: string }) {
           </div>
 
           {/* Language Distribution Bar Chart */}
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Language Distribution</h2>
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-6 text-slate-900">Language Distribution</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={languageStats}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
@@ -282,16 +277,16 @@ export default function Dashboard({ username }: { username: string }) {
           </div>
 
           {/* Language Percentage */}
-          <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Language Usage %</h2>
+          <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-6 text-slate-900">Language Usage %</h2>
             <div className="space-y-3">
               {languagePercentage.map((lang) => (
                 <div key={lang.name}>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium text-slate-700 dark:text-slate-300">{lang.name}</span>
-                    <span className="text-slate-600 dark:text-slate-400">{lang.percentage}%</span>
+                    <span className="font-medium text-slate-700">{lang.name}</span>
+                    <span className="text-slate-600">{lang.percentage}%</span>
                   </div>
-                  <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-2">
+                  <div className="w-full bg-slate-300 rounded-full h-2">
                     <div
                       className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full"
                       style={{ width: `${lang.percentage}%` }}
@@ -304,8 +299,8 @@ export default function Dashboard({ username }: { username: string }) {
         </div>
 
         {/* Contribution Heatmap */}
-        <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-12">
-          <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Contribution Activity (Last 30 Days)</h2>
+        <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 mb-12">
+          <h2 className="text-xl font-bold mb-6 text-slate-900">Contribution Activity (Last 30 Days)</h2>
           <div className="grid grid-cols-7 gap-2">
             {contributionData.slice(-30).map((day, idx) => (
               <div
@@ -344,8 +339,8 @@ export default function Dashboard({ username }: { username: string }) {
                 }}
                 className={`px-4 py-2 rounded-lg font-medium transition ${
                   selectedCategory === category.name
-                    ? "bg-blue-600 dark:bg-blue-500 text-white"
-                    : "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600"
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-200 text-slate-900 hover:bg-slate-300"
                 }`}
               >
                 {category.name} ({category.repos.length})
@@ -362,12 +357,12 @@ export default function Dashboard({ username }: { username: string }) {
               placeholder="Search repositories..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <select
               value={selectedLanguage || ""}
               onChange={(e) => setSelectedLanguage(e.target.value || undefined)}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">All Languages</option>
               {uniqueLanguages.map((lang) => (
@@ -379,7 +374,7 @@ export default function Dashboard({ username }: { username: string }) {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="stars">Sort by Stars</option>
               <option value="forks">Sort by Forks</option>
@@ -388,14 +383,14 @@ export default function Dashboard({ username }: { username: string }) {
               <option value="name">Sort by Name</option>
             </select>
           </div>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
+          <p className="text-sm text-slate-600">
             Showing {sortedRepos.length} of {categoryRepos.length} repositories
           </p>
         </div>
 
         {/* Top Repositories */}
-        <div className="bg-slate-100 dark:bg-slate-800/50 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Repositories</h2>
+        <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-slate-900">Repositories</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {sortedRepos.length > 0 ? (
               sortedRepos.map((repo) => (
@@ -404,35 +399,35 @@ export default function Dashboard({ username }: { username: string }) {
                   href={repo.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-slate-200 dark:bg-slate-700/50 hover:bg-slate-300 dark:hover:bg-slate-600/50 border border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg p-4 transition group"
+                  className="bg-slate-200 hover:bg-slate-300 border border-slate-300 hover:border-blue-500 rounded-lg p-4 transition group"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
+                    <h3 className="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition">
                       {repo.name}
                     </h3>
-                    <ExternalLink className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition" />
+                    <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-blue-600 transition" />
                   </div>
                   {repo.description && (
-                    <p className="text-slate-700 dark:text-slate-400 text-sm mb-3 line-clamp-2">
+                    <p className="text-slate-700 text-sm mb-3 line-clamp-2">
                       {repo.description}
                     </p>
                   )}
                   <div className="flex flex-wrap gap-3 mb-3">
                     {repo.language && (
-                      <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
                         {repo.language}
                       </span>
                     )}
                     {repo.topics.slice(0, 2).map((topic) => (
                       <span
                         key={topic}
-                        className="text-xs bg-slate-300 dark:bg-slate-600/50 text-slate-700 dark:text-slate-300 px-2 py-1 rounded"
+                        className="text-xs bg-slate-300 text-slate-700 px-2 py-1 rounded"
                       >
                         {topic}
                       </span>
                     ))}
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-slate-700 dark:text-slate-400">
+                  <div className="flex items-center gap-4 text-sm text-slate-700">
                     <span className="flex items-center gap-1">
                       <Star className="w-4 h-4" /> {repo.stargazers_count}
                     </span>
@@ -444,7 +439,7 @@ export default function Dashboard({ username }: { username: string }) {
               ))
             ) : (
               <div className="col-span-full text-center py-8">
-                <p className="text-slate-600 dark:text-slate-400">
+                <p className="text-slate-600">
                   No repositories match your filters.
                 </p>
               </div>
@@ -455,3 +450,4 @@ export default function Dashboard({ username }: { username: string }) {
     </div>
   );
 }
+

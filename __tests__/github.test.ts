@@ -74,14 +74,17 @@ const mockRepos: Repository[] = [
   },
 ];
 
-const mockEvents = [
-  { created_at: "2024-06-26T10:00:00Z" },
-  { created_at: "2024-06-25T14:30:00Z" },
-  { created_at: "2024-06-24T08:15:00Z" },
-  { created_at: "2024-06-23T16:45:00Z" },
-  { created_at: "2024-06-22T09:20:00Z" },
-  { created_at: "2024-06-20T11:10:00Z" }, // Gap on 21st
-];
+const getMockEvents = () => {
+  const today = new Date();
+  return [
+    { created_at: new Date(today.getTime() - 0 * 24 * 60 * 60 * 1000).toISOString() },
+    { created_at: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString() },
+    { created_at: new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+    { created_at: new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+    { created_at: new Date(today.getTime() - 4 * 24 * 60 * 60 * 1000).toISOString() },
+    { created_at: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString() }, // Gap on day 5
+  ];
+};
 
 describe("getLanguageStats", () => {
   it("should return language counts sorted by frequency", () => {
@@ -174,7 +177,7 @@ describe("getTopRepos", () => {
 
 describe("calculateContributionStreak", () => {
   it("should calculate correct streak from events", () => {
-    const streak = calculateContributionStreak(mockEvents);
+    const streak = calculateContributionStreak(getMockEvents());
 
     expect(streak).toBeGreaterThan(0);
     expect(streak).toBeLessThanOrEqual(5);
@@ -191,21 +194,22 @@ describe("calculateContributionStreak", () => {
   });
 
   it("should break streak on gap", () => {
+    const today = new Date();
     const eventsWithGap = [
-      { created_at: "2024-06-26T10:00:00Z" },
-      { created_at: "2024-06-25T10:00:00Z" },
-      // Gap on 24th, 23rd, 22nd
-      { created_at: "2024-06-21T10:00:00Z" },
+      { created_at: new Date(today.getTime() - 0 * 24 * 60 * 60 * 1000).toISOString() },
+      { created_at: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString() },
+      // Gap on day 2 and 3
+      { created_at: new Date(today.getTime() - 4 * 24 * 60 * 60 * 1000).toISOString() },
     ];
 
     const streak = calculateContributionStreak(eventsWithGap);
-    expect(streak).toBe(2); // Only 26th and 25th
+    expect(streak).toBe(2); // Only today and yesterday
   });
 });
 
 describe("getContributionHeatmap", () => {
   it("should return contribution data for last 365 days", () => {
-    const heatmap = getContributionHeatmap(mockEvents);
+    const heatmap = getContributionHeatmap(getMockEvents());
 
     expect(heatmap.length).toBeLessThanOrEqual(365);
     expect(heatmap[0]).toHaveProperty("date");
@@ -213,10 +217,11 @@ describe("getContributionHeatmap", () => {
   });
 
   it("should count multiple events per day", () => {
+    const today = new Date().toISOString().split("T")[0];
     const multiEventDay = [
-      { created_at: "2024-06-26T10:00:00Z" },
-      { created_at: "2024-06-26T14:00:00Z" },
-      { created_at: "2024-06-26T18:00:00Z" },
+      { created_at: `${today}T10:00:00Z` },
+      { created_at: `${today}T14:00:00Z` },
+      { created_at: `${today}T18:00:00Z` },
     ];
 
     const heatmap = getContributionHeatmap(multiEventDay);
