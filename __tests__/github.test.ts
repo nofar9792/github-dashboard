@@ -9,7 +9,7 @@ import {
   filterRepositories,
   sortRepositories,
 } from "@/lib/github";
-import { Repository, ContributionData } from "@/lib/github";
+import { Repository } from "@/lib/github";
 
 const mockRepos: Repository[] = [
   {
@@ -398,7 +398,7 @@ describe("sortRepositories", () => {
 
   it("should not modify original array", () => {
     const original = [...mockRepos];
-    const sorted = sortRepositories(mockRepos, "stars");
+    sortRepositories(mockRepos, "stars");
 
     expect(mockRepos).toEqual(original);
   });

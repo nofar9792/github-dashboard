@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   fetchGitHubUser,
   fetchUserRepos,
@@ -10,7 +11,6 @@ import {
   getTopRepos,
   calculateContributionStreak,
   getContributionHeatmap,
-  getRepositoryTimeline,
   categorizeRepositories,
   filterRepositories,
   sortRepositories,
@@ -31,8 +31,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
 } from "recharts";
 import {
   Star,
@@ -61,7 +59,6 @@ export default function Dashboard({ username }: { username: string }) {
   const [repos, setRepos] = useState<Repository[]>([]);
   const [languageStats, setLanguageStats] = useState<LanguageStat[]>([]);
   const [languagePercentage, setLanguagePercentage] = useState<LanguageStat[]>([]);
-  const [topRepos, setTopRepos] = useState<Repository[]>([]);
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,7 +80,6 @@ export default function Dashboard({ username }: { username: string }) {
         setRepos(reposData);
         setLanguageStats(getLanguageStats(reposData));
         setLanguagePercentage(getLanguagePercentage(reposData));
-        setTopRepos(getTopRepos(reposData));
         setCategories(categorizeRepositories(reposData));
 
         const eventsData = await fetchUserEvents(username);
@@ -140,10 +136,13 @@ export default function Dashboard({ username }: { username: string }) {
       <div className="bg-white backdrop-blur border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center gap-6">
-            <img
+            <Image
               src={user.avatar_url}
               alt={user.login}
-              className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg"
+              width={96}
+              height={96}
+              className="rounded-full border-4 border-blue-500 shadow-lg"
+              priority
             />
             <div className="flex-1">
               <div className="flex items-center gap-3">
@@ -373,7 +372,7 @@ export default function Dashboard({ username }: { username: string }) {
             </select>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => setSortBy(e.target.value as "stars" | "forks" | "updated" | "created" | "name")}
               className="px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="stars">Sort by Stars</option>

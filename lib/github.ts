@@ -51,11 +51,17 @@ export interface RepositoryTimeline {
   reposCreated: number;
 }
 
+export interface GitHubEvent {
+  created_at: string;
+  id: number;
+  type: string;
+}
+
 export const fetchGitHubUser = async (username: string): Promise<GitHubUser> => {
   try {
     const response = await axios.get(`${GITHUB_API}/users/${username}`);
     return response.data;
-  } catch (error) {
+  } catch {
     throw new Error(`Failed to fetch user ${username}`);
   }
 };
@@ -107,7 +113,7 @@ export const getTopRepos = (repos: Repository[], limit = 6): Repository[] => {
     .slice(0, limit);
 };
 
-export const calculateContributionStreak = (events: any[]): number => {
+export const calculateContributionStreak = (events: GitHubEvent[]): number => {
   if (!events || events.length === 0) return 0;
 
   let streak = 0;
@@ -165,7 +171,7 @@ export const categorizeRepositories = (repos: Repository[]): RepositoryCategory[
   ];
 };
 
-export const getContributionHeatmap = (events: any[]): ContributionData[] => {
+export const getContributionHeatmap = (events: GitHubEvent[]): ContributionData[] => {
   const contributionMap: { [key: string]: number } = {};
   const today = new Date();
 

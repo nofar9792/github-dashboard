@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const nextJest = require('next/jest')
 
 const createJestConfig = nextJest({
