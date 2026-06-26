@@ -64,7 +64,7 @@ describe('GitHub utility functions', () => {
           url: 'http://example.com/1',
           stargazers_count: 10,
           forks_count: 2,
-          language: null as any,
+          language: null,
           topics: [],
           created_at: '2020-01-01T00:00:00Z',
           updated_at: '2020-01-01T00:00:00Z',

@@ -8,7 +8,6 @@ import {
   fetchUserEvents,
   getLanguageStats,
   getLanguagePercentage,
-  getTopRepos,
   calculateContributionStreak,
   getContributionHeatmap,
   categorizeRepositories,
@@ -127,7 +126,7 @@ export default function Dashboard({ username }: { username: string }) {
   );
   const sortedRepos = sortRepositories(filteredRepos, sortBy);
   const uniqueLanguages = Array.from(
-    new Set(repos.filter((r) => r.language).map((r) => r.language))
+    new Set(repos.filter((r) => r.language !== null).map((r) => r.language as string))
   ).sort();
 
   return (

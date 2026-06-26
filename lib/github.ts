@@ -24,7 +24,7 @@ export interface Repository {
   url: string;
   stargazers_count: number;
   forks_count: number;
-  language: string;
+  language: string | null;
   topics: string[];
   created_at: string;
   updated_at: string;
@@ -53,8 +53,8 @@ export interface RepositoryTimeline {
 
 export interface GitHubEvent {
   created_at: string;
-  id: number;
-  type: string;
+  id?: number;
+  type?: string;
 }
 
 export const fetchGitHubUser = async (username: string): Promise<GitHubUser> => {
@@ -75,7 +75,7 @@ export const fetchUserRepos = async (
       `${GITHUB_API}/users/${username}/repos?sort=${sort}&per_page=100&type=owner`
     );
     return response.data;
-  } catch (error) {
+  } catch {
     throw new Error(`Failed to fetch repositories for ${username}`);
   }
 };
@@ -86,7 +86,7 @@ export const fetchUserEvents = async (username: string) => {
       `${GITHUB_API}/users/${username}/events/public?per_page=100`
     );
     return response.data;
-  } catch (error) {
+  } catch {
     throw new Error(`Failed to fetch events for ${username}`);
   }
 };
@@ -113,7 +113,7 @@ export const getTopRepos = (repos: Repository[], limit = 6): Repository[] => {
     .slice(0, limit);
 };
 
-export const calculateContributionStreak = (events: GitHubEvent[]): number => {
+export const calculateContributionStreak = (events: GitHubEvent[] | null): number => {
   if (!events || events.length === 0) return 0;
 
   let streak = 0;
@@ -160,7 +160,6 @@ export const getLanguagePercentage = (repos: Repository[]): LanguageStat[] => {
 };
 
 export const categorizeRepositories = (repos: Repository[]): RepositoryCategory[] => {
-  const forked = repos.filter((r) => r.url.includes("fork"));
   const personal = repos.filter((r) => !r.url.includes("fork"));
   const topStarred = repos.filter((r) => r.stargazers_count > 0);
 
@@ -171,7 +170,7 @@ export const categorizeRepositories = (repos: Repository[]): RepositoryCategory[
   ];
 };
 
-export const getContributionHeatmap = (events: GitHubEvent[]): ContributionData[] => {
+export const getContributionHeatmap = (events: GitHubEvent[] | null): ContributionData[] => {
   const contributionMap: { [key: string]: number } = {};
   const today = new Date();
 
@@ -182,7 +181,7 @@ export const getContributionHeatmap = (events: GitHubEvent[]): ContributionData[
     contributionMap[dateStr] = 0;
   }
 
-  events.forEach((event) => {
+  events?.forEach((event) => {
     const dateStr = event.created_at.split("T")[0];
     if (contributionMap[dateStr] !== undefined) {
       contributionMap[dateStr]++;
