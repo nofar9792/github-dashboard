@@ -12,11 +12,9 @@ test.describe('Home Page', () => {
   test('should navigate to profile page when searching', async ({ page }) => {
     await page.goto('/');
 
-    const searchInput = page.locator('input[placeholder*="GitHub username"]');
-    const searchButton = page.locator('button:has-text("Search")');
+    const exampleButton = page.locator('button:has-text("@torvalds")');
 
-    await searchInput.fill('torvalds');
-    await searchButton.click();
+    await exampleButton.click();
 
     await page.waitForURL('**/profile/torvalds');
     expect(page.url()).toContain('/profile/torvalds');
@@ -32,8 +30,8 @@ test.describe('Home Page', () => {
   test('should show features section', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.locator('text=Statistics')).toBeVisible();
-    await expect(page.locator('text=Contributions')).toBeVisible();
-    await expect(page.locator('text=Top Projects')).toBeVisible();
+    await expect(page.locator('h3:has-text("Statistics")')).toBeVisible();
+    await expect(page.locator('h3:has-text("Contributions")')).toBeVisible();
+    await expect(page.locator('h3:has-text("Top Projects")')).toBeVisible();
   });
 });
