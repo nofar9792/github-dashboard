@@ -21,12 +21,19 @@ export const logger = {
 
   error: (message: string, context?: LogContext) => {
     const timestamp = new Date().toISOString();
+    const errorMessage =
+      context?.error instanceof Error
+        ? context.error.message
+        : typeof context?.error === "string"
+          ? context.error
+          : String(context?.error);
+
     console.error(
       JSON.stringify({
         level: "ERROR",
         timestamp,
         message,
-        error: context?.error?.message || context?.error,
+        error: errorMessage,
         ...context,
       })
     );
