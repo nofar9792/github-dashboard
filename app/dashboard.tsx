@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { logger } from "@/lib/logger";
 import {
   fetchGitHubUser,
   fetchUserRepos,
@@ -85,12 +86,19 @@ export default function Dashboard({ username }: { username: string }) {
         setStreak(calculateContributionStreak(eventsData));
         setContributionData(getContributionHeatmap(eventsData));
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load data");
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to load data";
+        logger.error("Dashboard loading failed", {
+          username,
+          error: err,
+        });
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
+    logger.info("Dashboard loading started", { username });
     loadData();
   }, [username]);
 

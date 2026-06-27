@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logger } from "./logger";
 
 const GITHUB_API = "https://api.github.com";
 
@@ -58,10 +59,21 @@ export interface GitHubEvent {
 }
 
 export const fetchGitHubUser = async (username: string): Promise<GitHubUser> => {
+  const startTime = Date.now();
   try {
     const response = await axios.get(`${GITHUB_API}/users/${username}`);
+    const duration = Date.now() - startTime;
+    logger.info("GitHub user fetched successfully", {
+      username,
+      duration,
+    });
     return response.data;
-  } catch {
+  } catch (error) {
+    logger.error("Failed to fetch GitHub user", {
+      username,
+      error,
+      duration: Date.now() - startTime,
+    });
     throw new Error(`Failed to fetch user ${username}`);
   }
 };
@@ -70,23 +82,47 @@ export const fetchUserRepos = async (
   username: string,
   sort: "stars" | "updated" = "stars"
 ): Promise<Repository[]> => {
+  const startTime = Date.now();
   try {
     const response = await axios.get(
       `${GITHUB_API}/users/${username}/repos?sort=${sort}&per_page=100&type=owner`
     );
+    const duration = Date.now() - startTime;
+    logger.info("GitHub repositories fetched successfully", {
+      username,
+      count: response.data.length,
+      duration,
+    });
     return response.data;
-  } catch {
+  } catch (error) {
+    logger.error("Failed to fetch GitHub repositories", {
+      username,
+      error,
+      duration: Date.now() - startTime,
+    });
     throw new Error(`Failed to fetch repositories for ${username}`);
   }
 };
 
 export const fetchUserEvents = async (username: string) => {
+  const startTime = Date.now();
   try {
     const response = await axios.get(
       `${GITHUB_API}/users/${username}/events/public?per_page=100`
     );
+    const duration = Date.now() - startTime;
+    logger.info("GitHub events fetched successfully", {
+      username,
+      count: response.data.length,
+      duration,
+    });
     return response.data;
-  } catch {
+  } catch (error) {
+    logger.error("Failed to fetch GitHub events", {
+      username,
+      error,
+      duration: Date.now() - startTime,
+    });
     throw new Error(`Failed to fetch events for ${username}`);
   }
 };
