@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  githubId      Int?      @unique
+  githubUsername String?
+  avatarUrl     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  savedProfiles SavedProfile[]
+  collections   Collection[]
+
+  @@map("users")
+}
+
+model SavedProfile {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  githubUsername  String
+  notes           String?
+  savedAt         DateTime  @default(now())
+  collections     ProfileInCollection[]
+
+  @@unique([userId, githubUsername])
+  @@map("saved_profiles")
+}
+
+model Collection {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  description     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  profiles        ProfileInCollection[]
+
+  @@map("collections")
+}
+
+model ProfileInCollection {
+  profileId      String
+  collectionId   String
+  profile        SavedProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  collection     Collection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([profileId, collectionId])
+  @@map("profiles_in_collections")
+}
