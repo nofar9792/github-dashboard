@@ -27,9 +27,7 @@ export default function Home() {
               <Code className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-4">
-            GitHub Portfolio
-          </h1>
+          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-4">GitHub Portfolio</h1>
           <p className="text-xl text-slate-700 mb-2">
             Visualize your GitHub journey in one beautiful dashboard
           </p>
@@ -67,23 +65,17 @@ export default function Home() {
           <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-blue-500 transition">
             <div className="text-3xl mb-3">ðŸ“Š</div>
             <h3 className="font-bold text-slate-900 mb-2">Statistics</h3>
-            <p className="text-slate-700 text-sm">
-              View your followers, repos, and total stars
-            </p>
+            <p className="text-slate-700 text-sm">View your followers, repos, and total stars</p>
           </div>
           <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-blue-500 transition">
             <div className="text-3xl mb-3">ðŸ”¥</div>
             <h3 className="font-bold text-slate-900 mb-2">Contributions</h3>
-            <p className="text-slate-700 text-sm">
-              Track your coding streak and activity
-            </p>
+            <p className="text-slate-700 text-sm">Track your coding streak and activity</p>
           </div>
           <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 hover:border-blue-500 transition">
             <div className="text-3xl mb-3">â­</div>
             <h3 className="font-bold text-slate-900 mb-2">Top Projects</h3>
-            <p className="text-slate-700 text-sm">
-              Highlight your most popular repositories
-            </p>
+            <p className="text-slate-700 text-sm">Highlight your most popular repositories</p>
           </div>
         </div>
 
@@ -109,4 +101,3 @@ export default function Home() {
     </div>
   );
 }
-

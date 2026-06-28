@@ -32,16 +32,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import {
-  Star,
-  GitFork,
-  Users,
-  FileCode,
-  Flame,
-  Code,
-  ExternalLink,
-  Loader,
-} from "lucide-react";
+import { Star, GitFork, Users, FileCode, Flame, Code, ExternalLink, Loader } from "lucide-react";
 
 const COLORS = [
   "#3b82f6",
@@ -86,8 +77,7 @@ export default function Dashboard({ username }: { username: string }) {
         setStreak(calculateContributionStreak(eventsData));
         setContributionData(getContributionHeatmap(eventsData));
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to load data";
+        const errorMessage = err instanceof Error ? err.message : "Failed to load data";
         logger.error("Dashboard loading failed", {
           username,
           error: err,
@@ -117,9 +107,7 @@ export default function Dashboard({ username }: { username: string }) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 text-lg">
-            {error || "User not found"}
-          </p>
+          <p className="text-red-600 text-lg">{error || "User not found"}</p>
         </div>
       </div>
     );
@@ -127,11 +115,7 @@ export default function Dashboard({ username }: { username: string }) {
 
   const currentCategory = categories.find((c) => c.name === selectedCategory);
   const categoryRepos = currentCategory?.repos || repos;
-  const filteredRepos = filterRepositories(
-    categoryRepos,
-    searchQuery,
-    selectedLanguage
-  );
+  const filteredRepos = filterRepositories(categoryRepos, searchQuery, selectedLanguage);
   const sortedRepos = sortRepositories(filteredRepos, sortBy);
   const uniqueLanguages = Array.from(
     new Set(repos.filter((r) => r.language !== null).map((r) => r.language as string))
@@ -168,9 +152,7 @@ export default function Dashboard({ username }: { username: string }) {
               <div className="flex flex-wrap gap-4 mt-4 text-sm text-slate-600">
                 {user.location && <span>ðŸ“ {user.location}</span>}
                 {user.blog && <span>ðŸŒ {user.blog}</span>}
-                {user.twitter_username && (
-                  <span>ð• @{user.twitter_username}</span>
-                )}
+                {user.twitter_username && <span>ð• @{user.twitter_username}</span>}
               </div>
             </div>
           </div>
@@ -251,10 +233,7 @@ export default function Dashboard({ username }: { username: string }) {
                   dataKey="value"
                 >
                   {languageStats.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -306,7 +285,9 @@ export default function Dashboard({ username }: { username: string }) {
 
         {/* Contribution Heatmap */}
         <div className="bg-slate-100 backdrop-blur border border-slate-200 rounded-lg p-6 mb-12">
-          <h2 className="text-xl font-bold mb-6 text-slate-900">Contribution Activity (Last 30 Days)</h2>
+          <h2 className="text-xl font-bold mb-6 text-slate-900">
+            Contribution Activity (Last 30 Days)
+          </h2>
           <div className="grid grid-cols-7 gap-2">
             {contributionData.slice(-30).map((day, idx) => (
               <div
@@ -317,12 +298,12 @@ export default function Dashboard({ username }: { username: string }) {
                     day.count === 0
                       ? "var(--heat-0, #e2e8f0)"
                       : day.count < 3
-                      ? "var(--heat-1, #bfdbfe)"
-                      : day.count < 6
-                      ? "var(--heat-2, #60a5fa)"
-                      : day.count < 10
-                      ? "var(--heat-3, #3b82f6)"
-                      : "var(--heat-4, #1e40af)",
+                        ? "var(--heat-1, #bfdbfe)"
+                        : day.count < 6
+                          ? "var(--heat-2, #60a5fa)"
+                          : day.count < 10
+                            ? "var(--heat-3, #3b82f6)"
+                            : "var(--heat-4, #1e40af)",
                 }}
                 title={`${day.date}: ${day.count} contributions`}
               >
@@ -379,7 +360,9 @@ export default function Dashboard({ username }: { username: string }) {
             </select>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as "stars" | "forks" | "updated" | "created" | "name")}
+              onChange={(e) =>
+                setSortBy(e.target.value as "stars" | "forks" | "updated" | "created" | "name")
+              }
               className="px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="stars">Sort by Stars</option>
@@ -414,9 +397,7 @@ export default function Dashboard({ username }: { username: string }) {
                     <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-blue-600 transition" />
                   </div>
                   {repo.description && (
-                    <p className="text-slate-700 text-sm mb-3 line-clamp-2">
-                      {repo.description}
-                    </p>
+                    <p className="text-slate-700 text-sm mb-3 line-clamp-2">{repo.description}</p>
                   )}
                   <div className="flex flex-wrap gap-3 mb-3">
                     {repo.language && (
@@ -445,9 +426,7 @@ export default function Dashboard({ username }: { username: string }) {
               ))
             ) : (
               <div className="col-span-full text-center py-8">
-                <p className="text-slate-600">
-                  No repositories match your filters.
-                </p>
+                <p className="text-slate-600">No repositories match your filters.</p>
               </div>
             )}
           </div>
@@ -456,4 +435,3 @@ export default function Dashboard({ username }: { username: string }) {
     </div>
   );
 }
-

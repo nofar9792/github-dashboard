@@ -116,6 +116,7 @@ npx prisma studio
 ## Next Steps
 
 Once you have:
+
 - ✅ Supabase project created
 - ✅ `.env.local` configured
 - ✅ Tables created
@@ -124,6 +125,7 @@ Once you have:
 Run: `npm run ci` to verify everything works
 
 Then we'll implement:
+
 1. Authentication routes
 2. Save profile UI
 3. My Profiles page

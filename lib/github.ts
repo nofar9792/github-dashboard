@@ -107,9 +107,7 @@ export const fetchUserRepos = async (
 export const fetchUserEvents = async (username: string) => {
   const startTime = Date.now();
   try {
-    const response = await axios.get(
-      `${GITHUB_API}/users/${username}/events/public?per_page=100`
-    );
+    const response = await axios.get(`${GITHUB_API}/users/${username}/events/public?per_page=100`);
     const duration = Date.now() - startTime;
     logger.info("GitHub events fetched successfully", {
       username,
@@ -160,9 +158,7 @@ export const calculateContributionStreak = (events: GitHubEvent[] | null): numbe
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split("T")[0];
 
-    const hasEvent = events.some(
-      (event) => event.created_at.split("T")[0] === dateStr
-    );
+    const hasEvent = events.some((event) => event.created_at.split("T")[0] === dateStr);
 
     if (hasEvent) {
       streak++;
@@ -253,8 +249,7 @@ export const filterRepositories = (
     const matchesQuery =
       query === "" ||
       repo.name.toLowerCase().includes(query.toLowerCase()) ||
-      (repo.description &&
-        repo.description.toLowerCase().includes(query.toLowerCase()));
+      (repo.description && repo.description.toLowerCase().includes(query.toLowerCase()));
     const matchesLanguage = !language || repo.language === language;
     const matchesStars = !minStars || repo.stargazers_count >= minStars;
 
@@ -274,13 +269,11 @@ export const sortRepositories = (
       return sorted.sort((a, b) => b.forks_count - a.forks_count);
     case "updated":
       return sorted.sort(
-        (a, b) =>
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
       );
     case "created":
       return sorted.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
     case "name":
       return sorted.sort((a, b) => a.name.localeCompare(b.name));

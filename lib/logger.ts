@@ -9,6 +9,7 @@ export interface LogContext {
 export const logger = {
   info: (message: string, context?: LogContext) => {
     const timestamp = new Date().toISOString();
+    // eslint-disable-next-line no-console
     console.log(
       JSON.stringify({
         level: "INFO",
@@ -54,6 +55,7 @@ export const logger = {
   debug: (message: string, context?: LogContext) => {
     if (process.env.NODE_ENV === "development") {
       const timestamp = new Date().toISOString();
+      // eslint-disable-next-line no-console
       console.log(
         JSON.stringify({
           level: "DEBUG",
